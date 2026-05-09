@@ -6,4 +6,6 @@ frontend/dist/
 *.zip
 !release/ai问答产品包.zip
 release/ai问答产品包/
+!release/会议纪要优化版1.2产品包.zip
+release/会议纪要优化版1.2产品包/
 *.tsbuildinfo
