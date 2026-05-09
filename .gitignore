@@ -1,0 +1,9 @@
+.env
+backend/.env
+node_modules/
+frontend/node_modules/
+frontend/dist/
+*.zip
+!release/ai问答产品包.zip
+release/ai问答产品包/
+*.tsbuildinfo
