@@ -1,0 +1,143 @@
+version: 1.0
+flows:
+  - flowCode: FLOW_PLATFORM_LAUNCH
+    flowName: 集团智慧物业平台新建上线
+    skillChain:
+      - 1.02.04
+      - 3.01.03
+      - 3.02.01
+      - 3.02.03
+      - 3.02.04
+      - 3.03.02
+    nodes:
+      - key: start
+        type: start
+      - key: plan
+        type: approval
+        role: DIR
+        skillCode: 1.02.04
+        slaHours: 48
+      - key: feasibility
+        type: approval
+        role: GM
+        skillCode: 3.01.03
+        slaHours: 72
+      - key: execution
+        type: task
+        role: MGR
+        skillCode: 3.02.01
+        slaHours: 168
+      - key: milestone_acceptance
+        type: approval
+        role: GM
+        skillCode: 3.02.03
+        slaHours: 48
+      - key: go_live
+        type: task
+        role: MGR
+        skillCode: 3.02.04
+        slaHours: 24
+      - key: retrospective
+        type: task
+        role: PMO
+        skillCode: 3.03.02
+        slaHours: 48
+      - key: end
+        type: end
+    escalation:
+      onTimeout:
+        notifyRoles: [DIR, GM]
+
+  - flowCode: FLOW_P1_INCIDENT
+    flowName: 全网故障突发应急
+    skillChain:
+      - 5.02.01
+      - 9.03.01
+      - 5.02.03
+      - 9.03.02
+      - 9.03.04
+    trigger:
+      type: event
+      source: monitoring
+      condition: severity == "P1"
+    nodes:
+      - key: start
+        type: start
+      - key: alert_triage
+        type: task
+        role: SPC
+        skillCode: 5.02.01
+        slaMinutes: 5
+      - key: command_center
+        type: approval
+        role: GM
+        skillCode: 9.03.01
+        slaMinutes: 10
+      - key: recover
+        type: task
+        role: MGR
+        skillCode: 5.02.03
+        slaMinutes: 60
+      - key: external_comms
+        type: task
+        role: DIR
+        skillCode: 9.03.02
+        slaMinutes: 30
+      - key: postmortem
+        type: task
+        role: PMO
+        skillCode: 9.03.04
+        slaHours: 24
+      - key: end
+        type: end
+    escalation:
+      onTimeout:
+        notifyRoles: [GM]
+
+  - flowCode: FLOW_ANNUAL_BUDGET
+    flowName: 年度信息化预算编制
+    skillChain:
+      - 1.02.04
+      - 3.01.02
+      - 3.01.03
+      - 8.01.01
+      - 8.01.02
+      - 8.01.04
+    nodes:
+      - key: start
+        type: start
+      - key: route_plan
+        type: task
+        role: PMO
+        skillCode: 1.02.04
+        slaHours: 72
+      - key: demand_review
+        type: approval
+        role: DIR
+        skillCode: 3.01.02
+        slaHours: 48
+      - key: feasibility
+        type: task
+        role: MGR
+        skillCode: 3.01.03
+        slaHours: 120
+      - key: budget_compile
+        type: task
+        role: MGR
+        skillCode: 8.01.01
+        slaHours: 120
+      - key: budget_adjust
+        type: approval
+        role: GM
+        skillCode: 8.01.02
+        slaHours: 48
+      - key: roi_review
+        type: task
+        role: PMO
+        skillCode: 8.01.04
+        slaHours: 72
+      - key: end
+        type: end
+    escalation:
+      onTimeout:
+        notifyRoles: [DIR, GM]

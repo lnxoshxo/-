@@ -1,0 +1,254 @@
+openapi: 3.0.3
+info:
+  title: SkillOS API
+  version: 1.0.0
+servers:
+  - url: https://api.example.com
+paths:
+  /api/skills:
+    get:
+      summary: List skill definitions
+      parameters:
+        - in: query
+          name: domainNo
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+    post:
+      summary: Create skill definition
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillDefinition'
+      responses:
+        '201':
+          description: Created
+
+  /api/skills/{skillCode}:
+    get:
+      summary: Get skill definition
+      parameters:
+        - in: path
+          name: skillCode
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+    put:
+      summary: Update skill definition
+      parameters:
+        - in: path
+          name: skillCode
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillDefinition'
+      responses:
+        '200':
+          description: Updated
+
+  /api/flows:
+    post:
+      summary: Create flow definition
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlowDefinition'
+      responses:
+        '201':
+          description: Created
+
+  /api/instances:
+    post:
+      summary: Start skill instance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartInstanceRequest'
+      responses:
+        '201':
+          description: Created
+    get:
+      summary: List skill instances
+      responses:
+        '200':
+          description: OK
+
+  /api/instances/{instanceNo}:
+    get:
+      summary: Get skill instance detail
+      parameters:
+        - in: path
+          name: instanceNo
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+
+  /api/tasks/{taskNo}/complete:
+    post:
+      summary: Complete task
+      parameters:
+        - in: path
+          name: taskNo
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comments:
+                  type: string
+      responses:
+        '200':
+          description: Completed
+
+  /api/deliverables:
+    post:
+      summary: Upload deliverable metadata
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Deliverable'
+      responses:
+        '201':
+          description: Created
+
+  /api/kpis:
+    get:
+      summary: Query KPI records
+      parameters:
+        - in: query
+          name: periodKey
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+
+  /api/risks:
+    post:
+      summary: Create risk issue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RiskIssue'
+      responses:
+        '201':
+          description: Created
+
+components:
+  schemas:
+    SkillDefinition:
+      type: object
+      required: [skillCode, skillName, domainNo, moduleNo]
+      properties:
+        skillCode:
+          type: string
+        skillName:
+          type: string
+        domainNo:
+          type: integer
+        moduleNo:
+          type: integer
+        goal:
+          type: string
+        inputSchema:
+          type: object
+        outputSchema:
+          type: object
+        kpiSchema:
+          type: object
+        riskSchema:
+          type: object
+
+    FlowDefinition:
+      type: object
+      required: [flowCode, flowName, skillCode, flowJson]
+      properties:
+        flowCode:
+          type: string
+        flowName:
+          type: string
+        skillCode:
+          type: string
+        flowJson:
+          type: object
+        slaPolicy:
+          type: object
+        escalationPolicy:
+          type: object
+
+    StartInstanceRequest:
+      type: object
+      required: [skillCode, flowCode, orgId]
+      properties:
+        skillCode:
+          type: string
+        flowCode:
+          type: string
+        orgId:
+          type: integer
+        triggerSource:
+          type: string
+        ownerUserId:
+          type: integer
+        dueAt:
+          type: string
+          format: date-time
+        extra:
+          type: object
+
+    Deliverable:
+      type: object
+      required: [instanceNo, templateCode]
+      properties:
+        instanceNo:
+          type: string
+        templateCode:
+          type: string
+        fileUri:
+          type: string
+        fileName:
+          type: string
+
+    RiskIssue:
+      type: object
+      required: [instanceNo, riskLevel, riskDesc]
+      properties:
+        instanceNo:
+          type: string
+        riskLevel:
+          type: string
+          enum: [low, medium, high, critical]
+        riskDesc:
+          type: string
+        mitigation:
+          type: string
+        ownerUserId:
+          type: integer
