@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ theme.company }} 2.1版</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style-v2-1.css') }}" />
+  </head>
+  <body class="v21-body">
+    <div class="v21-grain-base"></div>
+    <div class="v21-grain-frost"></div>
+    <div class="v21-grain-brush"></div>
+    <div class="v21-grain-paper"></div>
+
+    <main class="v21-shell">
+      <header class="v21-hero">
+        <div class="v21-topbar">
+          <span class="v21-mark">{{ branding.logo_text }}</span>
+          <nav class="v21-nav">
+            <a href="/">V1</a>
+            <a href="/v2">V2</a>
+            <a href="/v2-1">V2.1</a>
+            <a href="/admin">管理后台</a>
+          </nav>
+        </div>
+
+        <section class="v21-hero-layout">
+          <div class="v21-copy-panel">
+            <p class="v21-kicker">MATERIAL REFINED EDITION</p>
+            <h1>{{ theme.company }}</h1>
+            <p class="v21-lead">{{ theme.slogan }}</p>
+            <p class="v21-description">第二版 2.1 重新聚焦颗粒材质表现，以超精细磨砂玻璃微颗粒、纳米哑光噪点、纸张纤维与轻金属拉丝层叠，塑造更纯净的高级商务首页氛围。</p>
+            <div class="v21-actions">
+              <a class="v21-button primary" href="#v21-qa">进入问答</a>
+              <a class="v21-button" href="/v2">返回 2.0</a>
+            </div>
+          </div>
+
+          <aside class="v21-material-panel">
+            <div class="v21-material-card">
+              <span>超精细磨砂玻璃微颗粒</span>
+              <strong>Frosted Nano Grain</strong>
+            </div>
+            <div class="v21-material-card">
+              <span>金属拉丝细颗粒</span>
+              <strong>Brushed Matte Layer</strong>
+            </div>
+            <div class="v21-material-card">
+              <span>纸张纤维与纯净噪点</span>
+              <strong>Paper Fiber Texture</strong>
+            </div>
+          </aside>
+        </section>
+      </header>
+
+      <section class="v21-feature-row">
+        <article class="v21-feature-card">
+          <span>质感方向</span>
+          <strong>低对比纯净颗粒</strong>
+        </article>
+        <article class="v21-feature-card">
+          <span>视觉状态</span>
+          <strong>柔焦哑光与分层纹理</strong>
+        </article>
+        <article class="v21-feature-card">
+          <span>页面用途</span>
+          <strong>企业官网 / 商务首页</strong>
+        </article>
+      </section>
+
+      <section class="v21-section" id="v21-qa">
+        <div class="v21-section-head">
+          <p class="v21-kicker">KNOWLEDGE INTERFACE</p>
+          <h2>智能问答</h2>
+        </div>
+        <div class="v21-qa-grid">
+          <form id="v21-ask-form" class="v21-form-card">
+            <textarea id="v21-question-input" rows="4" placeholder="例如：上实服务在科技创新方面有哪些落地能力？"></textarea>
+            <div class="v21-actions compact">
+              <button class="v21-button primary" type="submit">提交问题</button>
+              <button class="v21-button" type="button" id="v21-fill-first">使用推荐问题</button>
+            </div>
+            <div class="v21-chip-list">
+              {% for question in quick_questions %}
+              <button class="v21-chip" type="button" data-v21-question="{{ question.replace('上实服务物业集团', '上实服务') }}">{{ question.replace('上实服务物业集团', '上实服务') }}</button>
+              {% endfor %}
+            </div>
+          </form>
+
+          <article class="v21-answer-card">
+            <span class="v21-answer-label">AI RESPONSE</span>
+            <h3 id="v21-answer-title">等待提问</h3>
+            <p id="v21-answer-text">这一版在保留第二版内容结构的基础上，重点修正颗粒感与材质表现，让视觉更接近你描述的高端细颗粒商务首页。</p>
+            <div id="v21-answer-tags" class="v21-tag-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="v21-section">
+        <div class="v21-section-head">
+          <p class="v21-kicker">BUSINESS PANELS</p>
+          <h2>核心板块</h2>
+        </div>
+        <div class="v21-stack">
+          {% for section in sections %}
+          <article class="v21-panel">
+            <div class="v21-panel-copy">
+              <span class="v21-index">0{{ loop.index }}</span>
+              <h3>{{ section.name }}</h3>
+              <p>{{ section.description }}</p>
+            </div>
+            <div class="v21-panel-media">
+              {% set media = section.media[0] if section.media else None %}
+              {% if media and media.type == 'image' and media.url %}
+              <img src="{{ media.url }}" alt="{{ media.title }}" loading="lazy" />
+              {% elif media and media.type == 'video' and media.url and media.source == 'local' %}
+              <video controls preload="metadata" poster="{{ media.poster or '' }}">
+                <source src="{{ media.url }}" type="{{ media.mime_type or 'video/mp4' }}" />
+              </video>
+              {% else %}
+              <div class="v21-placeholder">
+                <span>{{ section.name }}</span>
+                <p>等待接入正式品牌素材</p>
+              </div>
+              {% endif %}
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+
+    <script>
+      window.__V21_QUICK_QUESTIONS__ = {{ quick_questions | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='app-v2-1.js') }}"></script>
+  </body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ theme.company }} 展会介绍系统</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+    <section class="welcome-overlay" id="welcome-overlay" aria-hidden="false">
+      <div class="welcome-panel">
+        <div class="welcome-topline">
+          <span class="welcome-time" id="welcome-time">--:--</span>
+          <span class="welcome-date" id="welcome-date">----/--/--</span>
+        </div>
+        <div class="welcome-brand">
+          {% if branding.logo_type == 'image' and branding.logo_image %}
+          <img class="welcome-logo-image" src="{{ branding.logo_image }}" alt="{{ theme.company }} Logo" />
+          {% else %}
+          <div class="logo-mark welcome-logo-text">{{ branding.logo_text }}</div>
+          {% endif %}
+          <div>
+            <p class="eyebrow">WELCOME TO THE BOOTH</p>
+            <h1>{{ theme.company }}</h1>
+            <p class="slogan">{{ theme.booth_title }}</p>
+            <p class="hero-badge">{{ branding.hero_badge }}</p>
+          </div>
+        </div>
+        <div class="welcome-mode-grid">
+          <button class="welcome-mode-card" type="button" data-mode="executive">
+            <span class="welcome-mode-kicker">LEADERSHIP MODE</span>
+            <strong>领导参观模式</strong>
+            <p>自动讲解优先，适合接待、演示与串场介绍。</p>
+          </button>
+          <button class="welcome-mode-card" type="button" data-mode="self-service">
+            <span class="welcome-mode-kicker">SELF SERVICE MODE</span>
+            <strong>自助参观模式</strong>
+            <p>观众自由提问与浏览，保留待机轮播与触摸交互。</p>
+          </button>
+        </div>
+        <div class="entry-link-row">
+          <a class="secondary-button entry-link-button" href="/">前端展示入口</a>
+          <a class="secondary-button entry-link-button" href="/admin">后台管理入口</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="idle-overlay hidden" id="idle-overlay" aria-hidden="true">
+      <div class="idle-stage">
+        <div class="idle-brand">
+          {% if branding.logo_type == 'image' and branding.logo_image %}
+          <img class="idle-logo-image" src="{{ branding.logo_image }}" alt="{{ theme.company }} Logo" />
+          {% else %}
+          <div class="logo-mark idle-logo-text">{{ branding.logo_text }}</div>
+          {% endif %}
+          <div>
+            <p class="eyebrow">IDLE ATTRACT MODE</p>
+            <h2>{{ theme.company }}</h2>
+            <p class="slogan">{{ branding.hero_badge }}</p>
+          </div>
+        </div>
+        <div class="idle-slide-panel">
+          <p class="idle-slide-kicker" id="idle-slide-kicker">智慧服务展演中</p>
+          <h3 id="idle-slide-title">{{ theme.booth_title }}</h3>
+          <p id="idle-slide-text">触摸屏幕或点击任意位置，即可进入交互问答与展区浏览模式。</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="app-shell">
+      <header class="hero-panel">
+        <div class="brand-block">
+          {% if branding.logo_type == 'image' and branding.logo_image %}
+          <img class="logo-image" src="{{ branding.logo_image }}" alt="{{ theme.company }} Logo" />
+          {% else %}
+          <div class="logo-mark">{{ branding.logo_text }}</div>
+          {% endif %}
+          <div>
+            <p class="eyebrow">EXPO INTELLIGENCE SYSTEM</p>
+            <h1>{{ theme.company }}</h1>
+            <p class="slogan">{{ theme.slogan }}</p>
+            <p class="hero-badge">{{ branding.hero_badge }}</p>
+          </div>
+        </div>
+        <div class="hero-actions">
+          <button class="glass-button" data-scroll-target="qa-section">立即体验</button>
+          <button class="glass-button secondary" id="mode-indicator" type="button">当前模式：自助参观</button>
+          <button class="glass-button secondary" id="voice-toggle" type="button">语音已关闭</button>
+          <button class="glass-button secondary" id="tour-toggle" type="button">自动讲解已关闭</button>
+          <button class="glass-button secondary" id="idle-toggle" type="button">启动待机轮播</button>
+        </div>
+      </header>
+
+      <section class="hero-metrics">
+        <article class="metric-card">
+          <span class="metric-value">AI</span>
+          <span class="metric-label">智能知识导览</span>
+        </article>
+        <article class="metric-card">
+          <span class="metric-value">IoT</span>
+          <span class="metric-label">设备联动运营</span>
+        </article>
+        <article class="metric-card">
+          <span class="metric-value">ESG</span>
+          <span class="metric-label">绿色低碳未来</span>
+        </article>
+        <article class="metric-card">
+          <span class="metric-value">24/7</span>
+          <span class="metric-label">全周期服务响应</span>
+        </article>
+      </section>
+
+      <section class="entry-panel">
+        <a class="entry-card" href="/">
+          <span class="entry-kicker">FRONTEND ENTRY</span>
+          <strong>前端展示入口</strong>
+          <p>用于展会现场触摸屏展示、问答、轮播和自动讲解测试。</p>
+        </a>
+        <a class="entry-card" href="/admin">
+          <span class="entry-kicker">BACKEND ENTRY</span>
+          <strong>后台管理入口</strong>
+          <p>用于修改知识库、切换品牌配置、恢复默认数据和测试讲解内容。</p>
+        </a>
+      </section>
+
+      <nav class="nav-grid" aria-label="主导航">
+        {% for section in sections %}
+        <button class="nav-card" data-scroll-target="section-{{ section.id }}" type="button">
+          <span class="nav-index">0{{ loop.index }}</span>
+          <span class="nav-title">{{ section.name }}</span>
+          <span class="nav-desc">{{ section.description }}</span>
+        </button>
+        {% endfor %}
+      </nav>
+
+      <main class="content-grid">
+        <section class="qa-panel" id="qa-section">
+          <div class="section-head">
+            <p class="eyebrow">AI KNOWLEDGE SEARCH</p>
+            <h2>智能问答</h2>
+          </div>
+          <div class="qa-meta-row">
+            <span class="tag">检索模式：{{ llm_config.mode }}</span>
+            <span class="tag">LLM 接入：{{ '已预留' if llm_config.enabled else '待配置' }}</span>
+            <span class="tag">自动讲解：{{ '已配置' if guided_tour else '待补内容' }}</span>
+          </div>
+
+          <form id="ask-form" class="ask-form">
+            <label class="sr-only" for="question-input">请输入问题</label>
+            <textarea id="question-input" name="question" rows="3" placeholder="例如：上实服务物业集团在科技创新方面有哪些应用？"></textarea>
+            <div class="form-actions">
+              <button type="submit" class="primary-button">提交问题</button>
+              <button type="button" class="secondary-button" id="voice-input">语音提问</button>
+            </div>
+          </form>
+
+          <div class="quick-question-panel">
+            <div class="history-title">推荐提问</div>
+            <div id="quick-question-list" class="history-list">
+              {% for question in quick_questions %}
+              <button class="history-chip" type="button" data-quick-question="{{ question }}">{{ question }}</button>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="history-panel">
+            <div class="history-title">最近提问</div>
+            <div id="history-list" class="history-list"></div>
+          </div>
+
+          <article class="answer-panel" id="answer-panel">
+            <p class="answer-label">系统回复</p>
+            <h3 id="answer-title">等待提问</h3>
+            <p id="answer-text">您可以通过文字或语音发起提问，系统会基于导入的知识库返回匹配结果。</p>
+            <div id="answer-highlights" class="tag-list"></div>
+            <div id="related-list" class="related-list"></div>
+          </article>
+        </section>
+
+        <section class="sections-panel">
+          <article class="info-card spotlight-card">
+            <div class="section-head compact">
+              <p class="eyebrow">AUTO PRESENTATION</p>
+              <h2>自动讲解流程</h2>
+            </div>
+            <div class="tour-list">
+              {% for item in guided_tour %}
+              <div class="tour-item">
+                <span class="tour-step">{{ '%02d' % loop.index }}</span>
+                <div>
+                  <h3>{{ item.title }}</h3>
+                  <p>{{ item.summary }}</p>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </article>
+
+          <article class="info-card spotlight-card" id="section-highlights">
+            <div class="section-head compact">
+              <p class="eyebrow">EXHIBITION HIGHLIGHTS</p>
+              <h2>核心亮点</h2>
+            </div>
+            <div class="spotlight-grid">
+              <div class="spotlight-item">
+                <h3>智慧化运营</h3>
+                <p>以 AI 巡检、智能工单与数据分析能力提升运营效率与服务透明度。</p>
+              </div>
+              <div class="spotlight-item">
+                <h3>多业态覆盖</h3>
+                <p>面向住宅、商办、公建与园区场景，输出可复用的高品质服务方案。</p>
+              </div>
+              <div class="spotlight-item">
+                <h3>客户体验导向</h3>
+                <p>从标准化作业到场景化服务，持续优化客户感知与满意度。</p>
+              </div>
+              <div class="spotlight-item">
+                <h3>未来社区愿景</h3>
+                <p>围绕低碳、社区生活与资产增值服务，打造面向未来的城市服务生态。</p>
+              </div>
+            </div>
+          </article>
+
+          {% for section in sections %}
+          <article class="info-card" id="section-{{ section.id }}">
+            <div class="section-head compact">
+              <p class="eyebrow">MODULE 0{{ loop.index }}</p>
+              <h2>{{ section.name }}</h2>
+            </div>
+            <p class="section-description">{{ section.description }}</p>
+            {% if section.material_status %}
+            <div class="material-note">素材状态：{{ section.material_status }}</div>
+            {% endif %}
+
+            <div class="media-grid">
+              {% for media in section.media %}
+                {% if media.type == 'video' %}
+                <div class="media-card video-card">
+                  {% if media.source == 'local' and media.url %}
+                  <video controls preload="metadata" poster="{{ media.poster or '' }}">
+                    <source src="{{ media.url }}" type="{{ media.mime_type or 'video/mp4' }}" />
+                    当前浏览器不支持该视频播放。
+                  </video>
+                  {% elif media.url %}
+                  <iframe src="{{ media.url }}" title="{{ media.title }}" loading="lazy" allowfullscreen></iframe>
+                  {% else %}
+                  <div class="media-placeholder">
+                    <span>视频占位</span>
+                    <strong>{{ media.title }}</strong>
+                    <p>{{ media.description or '等待替换为正式宣传视频或本地演示片。' }}</p>
+                  </div>
+                  {% endif %}
+                </div>
+                {% else %}
+                <figure class="media-card image-card">
+                  {% if media.url %}
+                  <img src="{{ media.url }}" alt="{{ media.title }}" loading="lazy" />
+                  <figcaption>{{ media.title }}</figcaption>
+                  {% else %}
+                  <div class="media-placeholder image-placeholder">
+                    <span>图片占位</span>
+                    <strong>{{ media.title }}</strong>
+                    <p>{{ media.description or '等待替换为正式项目图片或品牌素材。' }}</p>
+                  </div>
+                  {% endif %}
+                </figure>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </article>
+          {% endfor %}
+        </section>
+      </main>
+    </div>
+
+    <script>
+      window.__INITIAL_SECTIONS__ = {{ sections | tojson }};
+      window.__INITIAL_THEME__ = {{ theme | tojson }};
+      window.__INITIAL_IDLE_SLIDES__ = {{ idle_slides | tojson }};
+      window.__INITIAL_QUICK_QUESTIONS__ = {{ quick_questions | tojson }};
+      window.__INITIAL_GUIDED_TOUR__ = {{ guided_tour | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+</html>

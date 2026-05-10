@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ theme.company }} 第二版 2.2</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style-v2-2.css') }}" />
+  </head>
+  <body class="v22-body">
+    <div class="v22-bg-grain"></div>
+    <div class="v22-bg-dust"></div>
+    <div class="v22-bg-tree-wrap" aria-hidden="true">
+      <div class="v22-tree-halo"></div>
+      <div class="v22-tree-core"></div>
+      <div class="v22-tree-frost"></div>
+      <div class="v22-tree-lights">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="v22-bg-gold"></div>
+    </div>
+
+    <main class="v22-shell">
+      <header class="v22-hero">
+        <div class="v22-brandline">
+          <span class="v22-mini-mark">{{ branding.logo_text }}</span>
+          <nav class="v22-links">
+            <a href="/">第一版</a>
+            <a href="/v2">第二版</a>
+            <a href="/v2-1">第二版 2.1</a>
+            <a href="/v2-2">第二版 2.2</a>
+            <a href="/admin">管理后台</a>
+          </nav>
+        </div>
+
+        <section class="v22-intro">
+          <div class="v22-copy">
+            <p class="v22-kicker">CORPORATE EXPERIENCE EDITION</p>
+            <h1>{{ theme.company }}</h1>
+            <p class="v22-lead">{{ theme.slogan }}</p>
+            <p class="v22-sublead">以极简高级的商务首页语言，呈现智慧服务、科技创新与未来城市服务能力。</p>
+            <div class="v22-actions">
+              <a class="v22-button primary" href="#v22-qa">进入问答</a>
+              <a class="v22-button" href="/admin">管理内容</a>
+            </div>
+          </div>
+          <div class="v22-meta-card">
+            <div>
+              <span class="v22-meta-label">品牌定位</span>
+              <strong>极简商务展示</strong>
+            </div>
+            <div>
+              <span class="v22-meta-label">体验模式</span>
+              <strong>第二版官网风格</strong>
+            </div>
+            <div>
+              <span class="v22-meta-label">知识模式</span>
+              <strong>{{ llm_config.mode }}</strong>
+            </div>
+          </div>
+        </section>
+      </header>
+
+      <section class="v22-summary-grid">
+        <article class="v22-summary-card">
+          <span>业务覆盖</span>
+          <strong>多业态综合服务</strong>
+        </article>
+        <article class="v22-summary-card">
+          <span>技术驱动</span>
+          <strong>AI + IoT + 数据中台</strong>
+        </article>
+        <article class="v22-summary-card">
+          <span>品牌气质</span>
+          <strong>低饱和高级颗粒磨砂</strong>
+        </article>
+      </section>
+
+      <section class="v22-section" id="v22-qa">
+        <div class="v22-section-head">
+          <p class="v22-kicker">KNOWLEDGE INTERFACE</p>
+          <h2>智能问答</h2>
+        </div>
+        <div class="v22-qa-layout">
+          <form id="v22-ask-form" class="v22-ask-form">
+            <textarea id="v22-question-input" rows="4" placeholder="例如：上实服务在科技创新方面有哪些落地能力？"></textarea>
+            <div class="v22-actions">
+              <button class="v22-button primary" type="submit">提交问题</button>
+              <button class="v22-button" type="button" id="v22-fill-first">使用推荐问题</button>
+            </div>
+            <div class="v22-chip-list">
+              {% for question in quick_questions %}
+              <button class="v22-chip" type="button" data-v22-question="{{ question.replace('上实服务物业集团', '上实服务') }}">{{ question.replace('上实服务物业集团', '上实服务') }}</button>
+              {% endfor %}
+            </div>
+          </form>
+          <article class="v22-answer-card">
+            <span class="v22-answer-label">AI RESPONSE</span>
+            <h3 id="v22-answer-title">等待提问</h3>
+            <p id="v22-answer-text">第二版保留问答能力，但整体视觉切换为更克制、更高级的企业官网首页风格。</p>
+            <div id="v22-answer-tags" class="v22-tag-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="v22-section">
+        <div class="v22-section-head">
+          <p class="v22-kicker">BUSINESS MODULES</p>
+          <h2>核心内容</h2>
+        </div>
+        <div class="v22-content-list">
+          {% for section in sections %}
+          <article class="v22-content-item">
+            <div class="v22-content-copy">
+              <span class="v22-content-index">0{{ loop.index }}</span>
+              <h3>{{ section.name }}</h3>
+              <p>{{ section.description }}</p>
+            </div>
+            <div class="v22-content-media">
+              {% set media = section.media[0] if section.media else None %}
+              {% if media and media.type == 'image' and media.url %}
+              <img src="{{ media.url }}" alt="{{ media.title }}" loading="lazy" />
+              {% elif media and media.type == 'video' and media.url and media.source == 'local' %}
+              <video controls preload="metadata" poster="{{ media.poster or '' }}">
+                <source src="{{ media.url }}" type="{{ media.mime_type or 'video/mp4' }}" />
+              </video>
+              {% else %}
+              <div class="v22-placeholder">
+                <span>{{ section.name }}</span>
+                <p>等待替换为正式品牌素材</p>
+              </div>
+              {% endif %}
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="v22-section">
+        <div class="v22-section-head">
+          <p class="v22-kicker">GUIDED NARRATIVE</p>
+          <h2>讲解结构</h2>
+        </div>
+        <div class="v22-tour-grid">
+          {% for item in guided_tour %}
+          <article class="v22-tour-card">
+            <span class="v22-tour-index">{{ '%02d' % loop.index }}</span>
+            <h3>{{ item.title.replace('上实服务物业集团', '上实服务') }}</h3>
+            <p>{{ item.summary.replace('上实服务物业集团', '上实服务') }}</p>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+
+    <script>
+      window.__V22_QUICK_QUESTIONS__ = {{ quick_questions | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='app-v2-2.js') }}"></script>
+  </body>
+</html>

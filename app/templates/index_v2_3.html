@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ theme.company }} 第二版 2.3</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.svg') }}" type="image/svg+xml" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style-v2-3.css') }}" />
+  </head>
+  <body class="v23-body">
+    <div class="v23-grain-static"></div>
+    <div class="v23-grain-drift"></div>
+    <div class="v23-grain-spark"></div>
+    <div class="v23-glow"></div>
+
+    <main class="v23-shell">
+      <header class="v23-hero">
+        <div class="v23-brandline">
+          <span class="v23-mini-mark">{{ branding.logo_text }}</span>
+          <nav class="v23-links">
+            <a href="/">第一版</a>
+            <a href="/v2">第二版</a>
+            <a href="/v2-1">第二版 2.1</a>
+            <a href="/v2-2">第二版 2.2</a>
+            <a href="/v2-3">第二版 2.3</a>
+            <a href="/admin">管理后台</a>
+          </nav>
+        </div>
+
+        <section class="v23-intro">
+          <div class="v23-copy">
+            <p class="v23-kicker">CORPORATE EXPERIENCE EDITION</p>
+            <h1>{{ theme.company }}</h1>
+            <p class="v23-lead">{{ theme.slogan }}</p>
+            <p class="v23-sublead">以极简高级的商务首页语言，呈现智慧服务、科技创新与未来城市服务能力。</p>
+            <div class="v23-actions">
+              <a class="v23-button primary" href="#v23-qa">进入问答</a>
+              <a class="v23-button" href="/admin">管理内容</a>
+            </div>
+          </div>
+          <div class="v23-meta-card">
+            <div>
+              <span class="v23-meta-label">品牌定位</span>
+              <strong>极简商务展示</strong>
+            </div>
+            <div>
+              <span class="v23-meta-label">体验模式</span>
+              <strong>第二版官网风格</strong>
+            </div>
+            <div>
+              <span class="v23-meta-label">知识模式</span>
+              <strong>{{ llm_config.mode }}</strong>
+            </div>
+          </div>
+        </section>
+      </header>
+
+      <section class="v23-summary-grid">
+        <article class="v23-summary-card">
+          <span>业务覆盖</span>
+          <strong>多业态综合服务</strong>
+        </article>
+        <article class="v23-summary-card">
+          <span>技术驱动</span>
+          <strong>AI + IoT + 数据中台</strong>
+        </article>
+        <article class="v23-summary-card">
+          <span>品牌气质</span>
+          <strong>低饱和高级颗粒磨砂</strong>
+        </article>
+      </section>
+
+      <section class="v23-section" id="v23-qa">
+        <div class="v23-section-head">
+          <p class="v23-kicker">KNOWLEDGE INTERFACE</p>
+          <h2>智能问答</h2>
+        </div>
+        <div class="v23-qa-layout">
+          <form id="v23-ask-form" class="v23-ask-form">
+            <textarea id="v23-question-input" rows="4" placeholder="例如：上实服务在科技创新方面有哪些落地能力？"></textarea>
+            <div class="v23-actions">
+              <button class="v23-button primary" type="submit">提交问题</button>
+              <button class="v23-button" type="button" id="v23-fill-first">使用推荐问题</button>
+            </div>
+            <div class="v23-chip-list">
+              {% for question in quick_questions %}
+              <button class="v23-chip" type="button" data-v23-question="{{ question.replace('上实服务物业集团', '上实服务') }}">{{ question.replace('上实服务物业集团', '上实服务') }}</button>
+              {% endfor %}
+            </div>
+          </form>
+          <article class="v23-answer-card">
+            <span class="v23-answer-label">AI RESPONSE</span>
+            <h3 id="v23-answer-title">等待提问</h3>
+            <p id="v23-answer-text">第二版保留问答能力，但整体视觉切换为更克制、更高级的企业官网首页风格。</p>
+            <div id="v23-answer-tags" class="v23-tag-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="v23-section">
+        <div class="v23-section-head">
+          <p class="v23-kicker">BUSINESS MODULES</p>
+          <h2>核心内容</h2>
+        </div>
+        <div class="v23-content-list">
+          {% for section in sections %}
+          <article class="v23-content-item">
+            <div class="v23-content-copy">
+              <span class="v23-content-index">0{{ loop.index }}</span>
+              <h3>{{ section.name }}</h3>
+              <p>{{ section.description }}</p>
+            </div>
+            <div class="v23-content-media">
+              {% set media = section.media[0] if section.media else None %}
+              {% if media and media.type == 'image' and media.url %}
+              <img src="{{ media.url }}" alt="{{ media.title }}" loading="lazy" />
+              {% elif media and media.type == 'video' and media.url and media.source == 'local' %}
+              <video controls preload="metadata" poster="{{ media.poster or '' }}">
+                <source src="{{ media.url }}" type="{{ media.mime_type or 'video/mp4' }}" />
+              </video>
+              {% else %}
+              <div class="v23-placeholder">
+                <span>{{ section.name }}</span>
+                <p>等待替换为正式品牌素材</p>
+              </div>
+              {% endif %}
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="v23-section">
+        <div class="v23-section-head">
+          <p class="v23-kicker">GUIDED NARRATIVE</p>
+          <h2>讲解结构</h2>
+        </div>
+        <div class="v23-tour-grid">
+          {% for item in guided_tour %}
+          <article class="v23-tour-card">
+            <span class="v23-tour-index">{{ '%02d' % loop.index }}</span>
+            <h3>{{ item.title.replace('上实服务物业集团', '上实服务') }}</h3>
+            <p>{{ item.summary.replace('上实服务物业集团', '上实服务') }}</p>
+          </article>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+
+    <script>
+      window.__V23_QUICK_QUESTIONS__ = {{ quick_questions | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='app-v2-3.js') }}"></script>
+  </body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>知识库管理台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body class="admin-body">
+    <main class="admin-shell">
+      <section class="admin-panel">
+        <div class="section-head">
+          <p class="eyebrow">KNOWLEDGE BASE ADMIN</p>
+          <h1>知识库管理台</h1>
+        </div>
+        <p class="admin-summary">这里可以在未接入正式后台前，直接粘贴 JSON 更新展会内容、Logo 配置、图片视频资源、待机轮播和推荐提问。</p>
+        <div class="admin-status-row">
+          <span class="tag">LLM 模式：{{ llm_config.mode }}</span>
+          <span class="tag">供应方：{{ llm_config.provider }}</span>
+          <a class="secondary-button admin-link" href="/">返回前台</a>
+          <a class="secondary-button admin-link" href="/admin">后台首页</a>
+        </div>
+        <div class="entry-panel admin-entry-panel">
+          <a class="entry-card" href="/">
+            <span class="entry-kicker">FRONTEND ENTRY</span>
+            <strong>前端展示入口</strong>
+            <p>进入展会展示页，测试欢迎屏、自助模式、领导模式、问答与轮播效果。</p>
+          </a>
+          <a class="entry-card" href="/admin">
+            <span class="entry-kicker">BACKEND ENTRY</span>
+            <strong>后台管理入口</strong>
+            <p>停留在管理页，继续测试表单模式、JSON 模式与默认数据恢复能力。</p>
+          </a>
+        </div>
+        <div class="admin-mode-switch">
+          <button class="secondary-button admin-mode-button active" type="button" data-admin-mode="form">表单模式</button>
+          <button class="secondary-button admin-mode-button" type="button" data-admin-mode="json">JSON 模式</button>
+        </div>
+        <form id="admin-form" class="admin-form">
+          <section id="admin-form-mode" class="admin-mode-panel">
+            <div class="admin-grid">
+              <div class="admin-field-group">
+                <h2>品牌信息</h2>
+                <label>企业名称<input id="theme-company" class="admin-input" type="text" /></label>
+                <label>主题标语<input id="theme-slogan" class="admin-input" type="text" /></label>
+                <label>展位标题<input id="theme-booth-title" class="admin-input" type="text" /></label>
+                <label>Logo 类型
+                  <select id="branding-logo-type" class="admin-input">
+                    <option value="text">text</option>
+                    <option value="image">image</option>
+                  </select>
+                </label>
+                <label>Logo 文本<input id="branding-logo-text" class="admin-input" type="text" /></label>
+                <label>Logo 图片地址<input id="branding-logo-image" class="admin-input" type="text" /></label>
+                <label>品牌副标<input id="branding-hero-badge" class="admin-input" type="text" /></label>
+              </div>
+              <div class="admin-field-group">
+                <h2>推荐问题</h2>
+                <textarea id="quick-questions" class="admin-editor compact" spellcheck="false"></textarea>
+                <p class="admin-help">每行一个问题。</p>
+                <h2>待机轮播</h2>
+                <textarea id="idle-slides" class="admin-editor compact" spellcheck="false"></textarea>
+                <p class="admin-help">使用 JSON 数组，包含 `kicker`、`title`、`description`。</p>
+              </div>
+              <div class="admin-field-group wide">
+                <h2>自动讲解脚本</h2>
+                <textarea id="guided-tour" class="admin-editor compact" spellcheck="false"></textarea>
+                <p class="admin-help">使用 JSON 数组，包含 `title`、`summary`、`script`、`sectionId`、`durationMs`。</p>
+              </div>
+            </div>
+          </section>
+          <section id="admin-json-mode" class="admin-mode-panel hidden">
+            <label class="sr-only" for="knowledge-base-editor">知识库 JSON 编辑器</label>
+            <textarea id="knowledge-base-editor" class="admin-editor" spellcheck="false">{{ knowledge_base }}</textarea>
+          </section>
+          <div class="form-actions">
+            <button type="submit" class="primary-button">保存知识库</button>
+            <button type="button" class="secondary-button" id="reset-demo-data">恢复默认演示数据</button>
+          </div>
+        </form>
+        <div id="admin-message" class="admin-message">等待修改</div>
+      </section>
+    </main>
+
+    <script>
+      const adminForm = document.getElementById("admin-form");
+      const adminEditor = document.getElementById("knowledge-base-editor");
+      const adminMessage = document.getElementById("admin-message");
+      const resetDemoDataButton = document.getElementById("reset-demo-data");
+      const adminFormMode = document.getElementById("admin-form-mode");
+      const adminJsonMode = document.getElementById("admin-json-mode");
+      const adminModeButtons = document.querySelectorAll("[data-admin-mode]");
+      let currentMode = "form";
+
+      function parseJsonEditor() {
+        return JSON.parse(adminEditor.value);
+      }
+
+      function fillForm(payload) {
+        document.getElementById("theme-company").value = payload.theme?.company || "";
+        document.getElementById("theme-slogan").value = payload.theme?.slogan || "";
+        document.getElementById("theme-booth-title").value = payload.theme?.booth_title || "";
+        document.getElementById("branding-logo-type").value = payload.branding?.logo_type || "text";
+        document.getElementById("branding-logo-text").value = payload.branding?.logo_text || "";
+        document.getElementById("branding-logo-image").value = payload.branding?.logo_image || "";
+        document.getElementById("branding-hero-badge").value = payload.branding?.hero_badge || "";
+        document.getElementById("quick-questions").value = (payload.quick_questions || []).join("\n");
+        document.getElementById("idle-slides").value = JSON.stringify(payload.idle_slides || [], null, 2);
+        document.getElementById("guided-tour").value = JSON.stringify(payload.guided_tour || [], null, 2);
+      }
+
+      function mergeFormIntoPayload(payload) {
+        return {
+          ...payload,
+          theme: {
+            ...(payload.theme || {}),
+            company: document.getElementById("theme-company").value.trim(),
+            slogan: document.getElementById("theme-slogan").value.trim(),
+            booth_title: document.getElementById("theme-booth-title").value.trim(),
+          },
+          branding: {
+            ...(payload.branding || {}),
+            logo_type: document.getElementById("branding-logo-type").value,
+            logo_text: document.getElementById("branding-logo-text").value.trim(),
+            logo_image: document.getElementById("branding-logo-image").value.trim(),
+            hero_badge: document.getElementById("branding-hero-badge").value.trim(),
+          },
+          quick_questions: document.getElementById("quick-questions").value.split("\n").map((item) => item.trim()).filter(Boolean),
+          idle_slides: JSON.parse(document.getElementById("idle-slides").value || "[]"),
+          guided_tour: JSON.parse(document.getElementById("guided-tour").value || "[]"),
+        };
+      }
+
+      function setMode(nextMode) {
+        currentMode = nextMode;
+        adminModeButtons.forEach((button) => {
+          button.classList.toggle("active", button.dataset.adminMode === nextMode);
+        });
+        adminFormMode.classList.toggle("hidden", nextMode !== "form");
+        adminJsonMode.classList.toggle("hidden", nextMode !== "json");
+      }
+
+      adminModeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          setMode(button.dataset.adminMode);
+        });
+      });
+
+      fillForm(parseJsonEditor());
+
+      adminForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        adminMessage.textContent = "正在保存...";
+        try {
+          const parsed = currentMode === "json" ? parseJsonEditor() : mergeFormIntoPayload(parseJsonEditor());
+          const response = await fetch("/api/knowledge-base", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(parsed),
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || "保存失败");
+          }
+          adminEditor.value = JSON.stringify(data.knowledge_base, null, 2);
+          fillForm(data.knowledge_base);
+          adminMessage.textContent = data.message;
+        } catch (error) {
+          adminMessage.textContent = error.message;
+        }
+      });
+
+      resetDemoDataButton.addEventListener("click", async () => {
+        adminMessage.textContent = "正在恢复默认演示数据...";
+        try {
+          const response = await fetch("/api/knowledge-base/reset", { method: "POST" });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || "恢复失败");
+          }
+          adminEditor.value = JSON.stringify(data.knowledge_base, null, 2);
+          fillForm(data.knowledge_base);
+          adminMessage.textContent = data.message;
+        } catch (error) {
+          adminMessage.textContent = error.message;
+        }
+      });
+    </script>
+  </body>
+</html>

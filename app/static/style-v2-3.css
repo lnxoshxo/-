@@ -1,0 +1,396 @@
+:root {
+  --v23-bg: #ece5d9;
+  --v23-panel: rgba(248, 244, 238, 0.74);
+  --v23-border: rgba(88, 79, 68, 0.08);
+  --v23-text: #302c27;
+  --v23-muted: #736c64;
+  --v23-shadow: 0 28px 80px rgba(93, 82, 71, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body.v23-body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Inter", "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--v23-text);
+  background:
+    radial-gradient(circle at 20% 16%, rgba(255, 251, 245, 0.8), transparent 24%),
+    radial-gradient(circle at 80% 12%, rgba(255, 250, 242, 0.64), transparent 20%),
+    linear-gradient(180deg, #efe8dc 0%, #e8e0d4 100%);
+  overflow-x: hidden;
+}
+
+.v23-grain-static,
+.v23-grain-drift,
+.v23-grain-spark,
+.v23-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.v23-grain-static {
+  z-index: 0;
+  opacity: 0.12;
+  background-image:
+    radial-gradient(rgba(82, 74, 65, 0.12) 0.45px, transparent 0.45px),
+    radial-gradient(rgba(255, 255, 255, 0.24) 0.7px, transparent 0.7px);
+  background-size: 12px 12px, 26px 26px;
+}
+
+.v23-grain-drift {
+  z-index: 0;
+  opacity: 0.28;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.72) 0.45px, transparent 0.45px),
+    radial-gradient(rgba(245, 240, 233, 0.48) 0.8px, transparent 0.8px),
+    radial-gradient(rgba(210, 193, 170, 0.16) 1px, transparent 1px);
+  background-size: 180px 180px, 260px 260px, 320px 320px;
+  animation: v23Drift 22s ease-in-out infinite alternate;
+}
+
+.v23-grain-spark {
+  z-index: 1;
+  opacity: 0.18;
+  background-image:
+    radial-gradient(rgba(201, 172, 114, 0.34) 0.5px, transparent 0.5px),
+    radial-gradient(rgba(255, 248, 236, 0.4) 0.9px, transparent 0.9px);
+  background-size: 80px 80px, 140px 140px;
+  animation: v23Float 18s linear infinite;
+}
+
+.v23-glow {
+  z-index: 0;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255, 252, 245, 0.52), transparent 22%),
+    radial-gradient(circle at 76% 18%, rgba(255, 250, 241, 0.42), transparent 18%),
+    radial-gradient(circle at 52% 78%, rgba(223, 208, 188, 0.22), transparent 24%);
+  filter: blur(28px);
+  animation: v23Glow 16s ease-in-out infinite alternate;
+}
+
+.v23-shell {
+  position: relative;
+  z-index: 3;
+  width: min(1320px, calc(100vw - 48px));
+  margin: 0 auto;
+  padding: 30px 0 64px;
+}
+
+.v23-hero,
+.v23-summary-card,
+.v23-section,
+.v23-answer-card,
+.v23-ask-form,
+.v23-content-item,
+.v23-tour-card,
+.v23-meta-card {
+  background: var(--v23-panel);
+  border: 1px solid var(--v23-border);
+  box-shadow: var(--v23-shadow);
+  backdrop-filter: blur(18px) saturate(108%);
+}
+
+.v23-hero,
+.v23-section {
+  border-radius: 34px;
+  padding: 30px;
+}
+
+.v23-brandline,
+.v23-links,
+.v23-intro,
+.v23-actions,
+.v23-summary-grid,
+.v23-qa-layout,
+.v23-content-item,
+.v23-content-list,
+.v23-tour-grid {
+  display: flex;
+}
+
+.v23-brandline,
+.v23-intro {
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.v23-brandline {
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.v23-mini-mark,
+.v23-kicker,
+.v23-meta-label,
+.v23-content-index,
+.v23-answer-label,
+.v23-tour-index {
+  color: var(--v23-muted);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.v23-mini-mark {
+  font-size: 14px;
+}
+
+.v23-links {
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.v23-links a {
+  color: var(--v23-muted);
+  text-decoration: none;
+}
+
+.v23-copy {
+  max-width: 720px;
+}
+
+.v23-kicker {
+  margin: 0 0 10px;
+  font-size: 12px;
+}
+
+.v23-copy h1 {
+  margin: 0;
+  font-size: clamp(54px, 7vw, 92px);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+}
+
+.v23-lead,
+.v23-sublead,
+.v23-summary-card span,
+.v23-answer-card p,
+.v23-content-copy p,
+.v23-tour-card p,
+.v23-placeholder p {
+  color: var(--v23-muted);
+  line-height: 1.9;
+}
+
+.v23-lead {
+  margin: 16px 0 6px;
+  font-size: 22px;
+}
+
+.v23-sublead {
+  margin: 0;
+  max-width: 620px;
+}
+
+.v23-actions {
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.v23-button,
+.v23-chip {
+  border-radius: 999px;
+  border: 1px solid rgba(88, 79, 68, 0.1);
+  background: rgba(255, 253, 248, 0.68);
+  color: var(--v23-text);
+  padding: 14px 22px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.v23-button.primary {
+  background: rgba(58, 50, 44, 0.92);
+  color: #f8f2eb;
+}
+
+.v23-meta-card,
+.v23-summary-card,
+.v23-answer-card,
+.v23-ask-form,
+.v23-content-item,
+.v23-tour-card {
+  border-radius: 28px;
+}
+
+.v23-meta-card {
+  min-width: 300px;
+  padding: 22px;
+}
+
+.v23-meta-card strong,
+.v23-summary-card strong,
+.v23-answer-card h3,
+.v23-content-copy h3,
+.v23-tour-card h3 {
+  display: block;
+  margin: 6px 0 0;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.v23-summary-grid {
+  gap: 16px;
+  margin: 22px 0;
+}
+
+.v23-summary-card {
+  flex: 1;
+  padding: 22px;
+}
+
+.v23-section {
+  margin-top: 22px;
+}
+
+.v23-section-head {
+  margin-bottom: 22px;
+}
+
+.v23-section-head h2 {
+  margin: 0;
+  font-size: 40px;
+  font-weight: 500;
+}
+
+.v23-qa-layout,
+.v23-content-list,
+.v23-tour-grid {
+  gap: 18px;
+}
+
+.v23-ask-form,
+.v23-answer-card {
+  flex: 1;
+  padding: 24px;
+}
+
+.v23-ask-form textarea {
+  width: 100%;
+  min-height: 160px;
+  padding: 20px;
+  border-radius: 24px;
+  border: 1px solid rgba(88, 79, 68, 0.1);
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--v23-text);
+  resize: vertical;
+}
+
+.v23-chip-list,
+.v23-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.v23-content-list {
+  flex-direction: column;
+}
+
+.v23-content-item {
+  padding: 18px;
+  gap: 18px;
+  align-items: center;
+}
+
+.v23-content-copy,
+.v23-content-media {
+  flex: 1;
+}
+
+.v23-content-media img,
+.v23-content-media video {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-radius: 24px;
+  display: block;
+}
+
+.v23-placeholder {
+  height: 280px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(252, 248, 240, 0.7), rgba(244, 236, 225, 0.6));
+}
+
+.v23-tour-grid {
+  flex-wrap: wrap;
+}
+
+.v23-tour-card {
+  flex: 1 1 260px;
+  min-width: 260px;
+  padding: 22px;
+}
+
+@keyframes v23Drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(12px, -14px, 0) scale(1.02);
+  }
+}
+
+@keyframes v23Float {
+  0% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: translateY(18px);
+  }
+}
+
+@keyframes v23Glow {
+  0% {
+    transform: scale(1) translate3d(0, 0, 0);
+    opacity: 0.88;
+  }
+  100% {
+    transform: scale(1.04) translate3d(-8px, 6px, 0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1100px) {
+  .v23-brandline,
+  .v23-intro,
+  .v23-summary-grid,
+  .v23-qa-layout,
+  .v23-content-item {
+    flex-direction: column;
+  }
+
+  .v23-meta-card {
+    width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .v23-shell {
+    width: min(100vw - 20px, 100%);
+    padding-top: 12px;
+  }
+
+  .v23-hero,
+  .v23-section {
+    padding: 20px;
+    border-radius: 24px;
+  }
+
+  .v23-copy h1 {
+    font-size: 42px;
+  }
+}
