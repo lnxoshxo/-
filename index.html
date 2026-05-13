@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>上实服务 2026 展会 AI 智能问答</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <nav class="topbar">
+          <div class="brand">
+            <span class="brand-mark">SIIC</span>
+            <span>上实服务 AI 展厅</span>
+          </div>
+          <div class="top-actions">
+            <button class="ghost-button" id="exportData" type="button">导出题库</button>
+            <button class="ghost-button" id="adminToggle" type="button">后台管理</button>
+          </div>
+        </nav>
+        <section class="hero-grid">
+          <div>
+            <p class="eyebrow">2026 中国物业协会展会 · 离线智能问答模块</p>
+            <h1>以城市服务的长期主义，回答物业行业的新命题</h1>
+            <p class="hero-copy">
+              面向展会洽谈、品牌展示、客户接待和管理咨询，围绕上实服务“城市运营服务商和美好生活集成商”的定位，提供无网可用的流式问答体验。
+            </p>
+            <div class="hero-actions">
+              <button class="primary-button" id="startDemo" type="button">开始智能问答</button>
+              <button class="secondary-button" id="resetData" type="button">恢复默认题库</button>
+            </div>
+          </div>
+          <div class="metric-card">
+            <span>Offline AI Q&A</span>
+            <strong id="heroCount">20</strong>
+            <p>道高规格预置问答，支持后台动态扩展</p>
+          </div>
+        </section>
+      </header>
+
+      <section class="insight-strip" aria-label="上实服务公开信息摘要">
+        <article>
+          <span>品牌定位</span>
+          <strong>城市运营服务商</strong>
+          <p>上实集团旗下品牌，致力于成为有影响力的城市运营服务商和美好生活集成商。</p>
+        </article>
+        <article>
+          <span>服务业态</span>
+          <strong>六大场景覆盖</strong>
+          <p>公众、办公、商业、机构、院校、住宅物业服务协同发展。</p>
+        </article>
+        <article>
+          <span>行业荣誉</span>
+          <strong>全国 TOP27</strong>
+          <p>2025 年综合实力跃居全国 TOP27，服务力百强第 21 名。</p>
+        </article>
+        <article>
+          <span>新质实践</span>
+          <strong>低空经济应用</strong>
+          <p>在芜湖试点无人机幕墙清洗，探索科技赋能城市服务。</p>
+        </article>
+      </section>
+
+      <main class="main-layout">
+        <section class="panel question-panel" aria-label="问题列表">
+          <div class="panel-title">
+            <div>
+              <p class="eyebrow">Knowledge Base</p>
+              <h2>展会核心问题</h2>
+            </div>
+            <span id="questionCount">0 题</span>
+          </div>
+          <div class="search-box">
+            <input id="searchInput" type="search" placeholder="搜索关键词，例如：城市服务、绿色、数字化" />
+          </div>
+          <div class="quick-prompts" id="quickPrompts" aria-label="快捷提问"></div>
+          <div class="question-list" id="questionList"></div>
+        </section>
+
+        <section class="panel answer-panel" aria-label="回答区域">
+          <div class="assistant-header">
+            <div>
+              <p class="eyebrow">Streaming Answer</p>
+              <h2 id="activeQuestion">请选择一个问题</h2>
+            </div>
+            <span class="status-pill" id="streamStatus">待机</span>
+          </div>
+          <div class="answer-box" id="answerBox">
+            <p class="placeholder">点击左侧问题后，系统将以流式方式输出针对上实服务的专业答案。</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <aside class="admin-drawer" id="adminDrawer" aria-hidden="true">
+      <div class="admin-card">
+        <div class="admin-head">
+          <div>
+            <p class="eyebrow">Admin Console</p>
+            <h2>题库后台</h2>
+          </div>
+          <button class="icon-button" id="closeAdmin" type="button">×</button>
+        </div>
+        <div class="admin-stats">
+          <article>
+            <span>题目总数</span>
+            <strong id="adminTotal">0</strong>
+          </article>
+          <article>
+            <span>平均字数</span>
+            <strong id="adminAverage">0</strong>
+          </article>
+          <article>
+            <span>自定义题</span>
+            <strong id="adminCustom">0</strong>
+          </article>
+        </div>
+        <div class="import-box">
+          <label>
+            导入 JSON 题库
+            <input id="importFile" type="file" accept="application/json,.json" />
+          </label>
+        </div>
+        <form id="qaForm" class="qa-form">
+          <input type="hidden" id="editId" />
+          <label>
+            问题
+            <input id="questionInput" type="text" placeholder="输入展会问题" required />
+          </label>
+          <label>
+            答案
+            <textarea id="answerInput" rows="8" placeholder="输入高规格回答内容" required></textarea>
+          </label>
+          <div class="form-actions">
+            <button class="primary-button" type="submit">保存题目</button>
+            <button class="secondary-button" id="clearForm" type="button">清空表单</button>
+          </div>
+        </form>
+        <div class="admin-list" id="adminList"></div>
+      </div>
+    </aside>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
