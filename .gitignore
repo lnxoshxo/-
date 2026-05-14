@@ -8,4 +8,6 @@ frontend/dist/
 release/ai问答产品包/
 !release/会议纪要优化版1.2产品包.zip
 release/会议纪要优化版1.2产品包/
+!release/会议纪要优化版1.2一键安装包.zip
+release/会议纪要优化版1.2一键安装包/
 *.tsbuildinfo
