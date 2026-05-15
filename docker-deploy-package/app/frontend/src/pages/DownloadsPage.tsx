@@ -1,21 +1,6 @@
 export function DownloadsPage() {
   const files = [
     {
-      name: 'Docker 一键部署包',
-      file: '/siicservice-expo-ai-system-docker-package.zip',
-      description: '包含 Dockerfile、docker-compose.yml 和完整源码，可通过 docker compose up -d --build 一键启动。',
-    },
-    {
-      name: '离线运行包',
-      file: '/siicservice-expo-ai-system-offline-runtime.zip',
-      description: '包含预构建前后端产物与启动脚本，适合已安装 Node.js 的离线运行场景。',
-    },
-    {
-      name: 'Windows 专用交付包',
-      file: '/siicservice-expo-ai-system-windows-package.zip',
-      description: '面向 Windows 环境，内含 start.bat 与预构建产物，适合现场电脑直接启动。',
-    },
-    {
       name: '一键安装包',
       file: '/siicservice-expo-ai-system-installer.zip',
       description: '包含精简源码包、Linux/macOS 启动脚本、Windows 启动脚本，以及 100 次自动化测试通过说明。',
